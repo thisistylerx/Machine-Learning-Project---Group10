@@ -1,2 +1,2 @@
-# Machine-Learning-Project---Group-10-
+# Machine-Learning-Project---Group10
 project
