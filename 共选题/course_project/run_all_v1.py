@@ -12,63 +12,60 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 BATCH_SIZE = 32
 EPOCHS = 20
 LR = 1e-4
-DATA_ROOT = './data'
-RESULT_ROOT = './results_v1'
 
-# 创建结果文件夹
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+DATA_ROOT = os.path.join(PROJECT_ROOT, 'data')
+RESULT_ROOT = os.path.join(PROJECT_ROOT, 'results_v1')
 os.makedirs(RESULT_ROOT, exist_ok=True)
 
 
-# 模型定义
+#  模型定义
 class SimpleLinear(nn.Module):
-    def __init__(self, input_channels, time_points, num_classes):
+    def __init__(self, num_classes):
         super(SimpleLinear, self).__init__()
-        self.flatten = nn.Flatten()  # 展平
-        self.fc = nn.Linear(input_channels * time_points, num_classes)  # 全连接
+        self.flatten = nn.Flatten()
+        self.fc = nn.LazyLinear(num_classes)  # 自动获取输入维度
 
     def forward(self, x):
         x = self.flatten(x)
         return self.fc(x)
 
 
-# MLP模型
+# 简单MLP模型
 class SimpleMLP(nn.Module):
     def __init__(
             self,
-            input_channels,
             num_classes,
-            time_points=200,
             hidden_dims=(256, 128),
             dropout=0.3
     ):
         super().__init__()
 
-        input_dim = input_channels * time_points  # 计算输入维度
-
         layers = []
-        prev_dim = input_dim
+        prev_dim = None
 
-        # 构建隐藏层
         for h in hidden_dims:
-            layers.extend([
-                nn.Linear(prev_dim, h),
-                nn.ReLU(),
-                nn.Dropout(dropout)
-            ])
+            if prev_dim is None:
+                layers.append(nn.LazyLinear(h))
+            else:
+                layers.append(nn.Linear(prev_dim, h))
+            layers.extend([nn.ReLU(), nn.Dropout(dropout)])
             prev_dim = h
 
-        layers.append(nn.Linear(prev_dim, num_classes))  # 最后输出分类
+        layers.append(nn.Linear(prev_dim, num_classes))
 
         self.flatten = nn.Flatten()
         self.mlp = nn.Sequential(*layers)
 
     def forward(self, x):
+        # x: (B, C, T)
         x = self.flatten(x)
         logits = self.mlp(x)
         return logits
 
 
-# EEGNet模型（
+# EEGNet模型
 class EEGNet(nn.Module):
     def __init__(self, chans, time_point=200, f1=8, d=2, pk1=4, pk2=8, dp=0.5, max_norm1=1, norm=torch.nn.Identity()):
         super(EEGNet, self).__init__()
@@ -112,13 +109,12 @@ class EEGNet(nn.Module):
         self.norm(x)
         if len(x.shape) == 2:
             x = x.unsqueeze(dim=1)
-        x = self.block1(x.unsqueeze(dim=1))
+        if len(x.shape) == 3:
+            x = x.unsqueeze(dim=1)
+        x = self.block1(x)
         x = self.block2(x)
         x = self.block3(x)
         return x.flatten(start_dim=1)
-
-
-
 
 
 # 训练函数
@@ -128,16 +124,29 @@ def train_dataset(dataset_name, model_type='SimpleMLP'):
     print(f"开始训练 {dataset_name} 数据集")
     print(f"{'='*60}")
 
-    # 读取数据集
-    info_path = os.path.join(DATA_ROOT, dataset_name, 'dataset_info.json')
+    # 读取数据集配置
+    # 优先读取 fixed 版本的配置文件
+    info_path_fixed = os.path.join(DATA_ROOT, dataset_name, 'dataset_info_fixed.json')
+    info_path_original = os.path.join(DATA_ROOT, dataset_name, 'dataset_info.json')
+
+    if os.path.exists(info_path_fixed):
+        info_path = info_path_fixed
+    elif os.path.exists(info_path_original):
+        info_path = info_path_original
     with open(info_path, 'r', encoding='utf-8') as f:
         info = json.load(f)
 
-    n_channels = info['dataset']['channel_count']
-    n_samples = int(info['processing']['target_sampling_rate'] * info['processing']['window_sec'])
-    n_classes = len(info['dataset']['category_list'])
-    print(f"通道数：{n_channels}，时间点数：{n_samples}，分类数：{n_classes}")
+    dataset_info = info.get("dataset", {})
+    processing_info = info.get("processing", {})
 
+    n_channels = dataset_info.get("channel_count", 32)  # 没有就用32
+    n_classes = len(dataset_info.get("category_list", [0, 1]))  # 没有就2分类
+
+    sr = processing_info.get("target_sampling_rate", 200)
+    win = processing_info.get("window_sec", 1)
+    n_samples = int(sr * win)
+
+    print(f"通道数：{n_channels}，时间点数：{n_samples}，分类数：{n_classes}")
     train_path = os.path.join(DATA_ROOT, dataset_name, 'train.h5')
     val_path = os.path.join(DATA_ROOT, dataset_name, 'val.h5')
     test_path = os.path.join(DATA_ROOT, dataset_name, 'test_x_only.h5')
@@ -153,12 +162,12 @@ def train_dataset(dataset_name, model_type='SimpleMLP'):
 
     # 根据选择初始化对应模型
     if model_type == 'SimpleLinear':
-        model = SimpleLinear(n_channels, n_samples, n_classes).to(DEVICE)
+        model = SimpleLinear(n_classes).to(DEVICE)
     elif model_type == 'SimpleMLP':
-        model = SimpleMLP(n_channels, n_classes, n_samples).to(DEVICE)
+        model = SimpleMLP(n_classes).to(DEVICE)
     else:
         net = EEGNet(n_channels, n_samples).to(DEVICE)
-        model = nn.Sequential(net, nn.Linear(net.embed_dim, n_classes)).to(DEVICE)
+        model = nn.Sequential(net, nn.LazyLinear(n_classes)).to(DEVICE)
 
     # 损失函数与优化器
     criterion = nn.CrossEntropyLoss()
@@ -227,8 +236,29 @@ def train_dataset(dataset_name, model_type='SimpleMLP'):
 
 
 # ====================== 主函数 ======================
+# ====================== 主函数 ======================
 if __name__ == "__main__":
     # 5个数据集列表
     datasets = ['BCIC2A', 'CHINESE', 'MDD', 'SEED', 'SLEEP']
+    model_type = 'SimpleMLP'  # 这里可以切换模型：SimpleLinear / SimpleMLP / EEGNet
 
     print("批量的脚本启动")
+
+    all_results = {}
+    for dataset in datasets:
+        try:
+            print(f"\n开始处理数据集：{dataset}")
+            acc, train_losses, val_losses, val_acc_list, best_test_res = train_dataset(dataset, model_type)
+            all_results[dataset] = acc
+        except Exception as e:
+            print(f"训练 {dataset} 时出错：{e}")
+            all_results[dataset] = 0.0
+
+    # 打印所有结果汇总
+    print(f"\n{'='*60}")
+    print(f"所有数据集训练结果汇总 (模型: {model_type})")
+    print(f"{'='*60}")
+    for dataset, acc in all_results.items():
+        print(f"{dataset}: 准确率 = {acc:.4f}")
+
+    print(f"\n所有结果已保存到 {RESULT_ROOT} 文件夹")
