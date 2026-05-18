@@ -118,6 +118,114 @@ class EEGNet(nn.Module):
         return x.flatten(start_dim=1)
 
 
+
+
+
+# 训练函数
+# 对每个数据集完成训练验证
+def train_dataset(dataset_name, model_type='SimpleMLP'):
+    print(f"\n{'='*60}")
+    print(f"开始训练 {dataset_name} 数据集")
+    print(f"{'='*60}")
+
+    # 读取数据集
+    info_path = os.path.join(DATA_ROOT, dataset_name, 'dataset_info.json')
+    with open(info_path, 'r', encoding='utf-8') as f:
+        info = json.load(f)
+
+    n_channels = info['dataset']['channel_count']
+    n_samples = int(info['processing']['target_sampling_rate'] * info['processing']['window_sec'])
+    n_classes = len(info['dataset']['category_list'])
+    print(f"通道数：{n_channels}，时间点数：{n_samples}，分类数：{n_classes}")
+
+    train_path = os.path.join(DATA_ROOT, dataset_name, 'train.h5')
+    val_path = os.path.join(DATA_ROOT, dataset_name, 'val.h5')
+    test_path = os.path.join(DATA_ROOT, dataset_name, 'test_x_only.h5')
+
+
+    train_ds = TrainDataset(train_path)
+    val_ds = TrainDataset(val_path)
+    test_ds = TestDataset(test_path)
+
+    train_loader = DataLoader(train_ds, batch_size=BATCH_SIZE, shuffle=True)
+    val_loader = DataLoader(val_ds, batch_size=BATCH_SIZE, shuffle=False)
+    test_loader = DataLoader(test_ds, batch_size=1, shuffle=False)
+
+    # 根据选择初始化对应模型
+    if model_type == 'SimpleLinear':
+        model = SimpleLinear(n_channels, n_samples, n_classes).to(DEVICE)
+    elif model_type == 'SimpleMLP':
+        model = SimpleMLP(n_channels, n_classes, n_samples).to(DEVICE)
+    else:
+        net = EEGNet(n_channels, n_samples).to(DEVICE)
+        model = nn.Sequential(net, nn.Linear(net.embed_dim, n_classes)).to(DEVICE)
+
+    # 损失函数与优化器
+    criterion = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=LR)
+
+    # 用来保存训练数据，方便后期画图
+    train_losses = []
+    val_losses = []
+    val_acc_list = []
+    best_acc = 0.0
+    best_test_res = []
+
+    # 开始循环训练
+    for epoch in range(EPOCHS):
+        # 训练模式
+        model.train()
+        total_train_loss = 0.0
+        train_total = 0
+        for data, label in train_loader:
+            data, label = data.to(DEVICE), label.to(DEVICE)
+            optimizer.zero_grad()
+            out = model(data)
+            loss = criterion(out, label)
+            loss.backward()
+            optimizer.step()
+            total_train_loss += loss.item() * label.shape[0]
+            train_total += label.shape[0]
+        avg_train_loss = total_train_loss / train_total
+        train_losses.append(avg_train_loss)
+
+        # 验证模式，关闭梯度
+        model.eval()
+        total_val_loss = 0.0
+        correct = 0
+        val_total = 0
+        with torch.no_grad():
+            for data, label in val_loader:
+                data, label = data.to(DEVICE), label.to(DEVICE)
+                out = model(data)
+                loss = criterion(out, label)
+                total_val_loss += loss.item() * label.shape[0]
+                val_total += label.shape[0]
+                pred = torch.argmax(out, dim=1)
+                correct += (pred == label).sum().item()
+        avg_val_loss = total_val_loss / val_total
+        val_acc = correct / val_total
+        val_losses.append(avg_val_loss)
+        val_acc_list.append(val_acc)
+
+        print(f"轮次{epoch+1} 训练损失:{avg_train_loss:.4f} 验证损失:{avg_val_loss:.4f} 准确率:{val_acc:.4f}")
+
+        # 保存最优模型对应的测试结果
+        if val_acc > best_acc:
+            best_acc = val_acc
+            temp_res = []
+            for data in test_loader:
+                data = data.to(DEVICE)
+                pred = torch.argmax(model(data), dim=1)
+                temp_res.append(int(pred.cpu().item()))
+            best_test_res = temp_res
+
+    print(f"{dataset_name}训练完成，最优准确率：{best_acc:.4f}")
+    return best_acc, train_losses, val_losses, val_acc_list, best_test_res
+
+
+
+
 # ====================== 主函数 ======================
 if __name__ == "__main__":
     # 5个数据集列表
