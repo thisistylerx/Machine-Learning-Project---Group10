@@ -23,4 +23,4 @@ if __name__ == "__main__":
     # 5个数据集列表
     datasets = ['BCIC2A', 'CHINESE', 'MDD', 'SEED', 'SLEEP']
 
-    print("批量训练脚本启动")
+    print("批量脚本启动")
