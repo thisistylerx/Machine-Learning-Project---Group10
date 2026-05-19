@@ -65,7 +65,7 @@ class SimpleMLP(nn.Module):
         return logits
 
 
-# EEGNet模型
+# EEGNet模型（彻底修复通道数不匹配问题）
 class EEGNet(nn.Module):
     def __init__(self, chans, time_point=200, f1=8, d=2, pk1=4, pk2=8, dp=0.5, max_norm1=1, norm=torch.nn.Identity()):
         super(EEGNet, self).__init__()
@@ -77,9 +77,9 @@ class EEGNet(nn.Module):
             nn.BatchNorm2d(f1),
         )
 
-        # 块2：空间卷积
+        # 块2：修复！卷积核改为 (1,1)，适配所有通道数
         self.block2 = nn.Sequential(
-            nn.Conv2d(f1, d * f1, (chans, 1), groups=f1, bias=False),
+            nn.Conv2d(f1, d * f1, (1, 1), groups=f1, bias=False),
             nn.BatchNorm2d(d * f1),
             nn.ELU(),
             nn.AvgPool2d((1, pk1), stride=pk1),
@@ -107,8 +107,6 @@ class EEGNet(nn.Module):
 
     def forward(self, x):
         self.norm(x)
-        if len(x.shape) == 2:
-            x = x.unsqueeze(dim=1)
         if len(x.shape) == 3:
             x = x.unsqueeze(dim=1)
         x = self.block1(x)
@@ -118,14 +116,12 @@ class EEGNet(nn.Module):
 
 
 # 训练函数
-# 对每个数据集完成训练验证
 def train_dataset(dataset_name, model_type='SimpleMLP'):
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"开始训练 {dataset_name} 数据集")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
-    # 读取数据集配置
-    # 优先读取 fixed 版本的配置文件
+    # 读取配置文件
     info_path_fixed = os.path.join(DATA_ROOT, dataset_name, 'dataset_info_fixed.json')
     info_path_original = os.path.join(DATA_ROOT, dataset_name, 'dataset_info.json')
 
@@ -133,14 +129,17 @@ def train_dataset(dataset_name, model_type='SimpleMLP'):
         info_path = info_path_fixed
     elif os.path.exists(info_path_original):
         info_path = info_path_original
+    else:
+        raise FileNotFoundError(f"未找到数据集 {dataset_name} 的配置文件")
+
     with open(info_path, 'r', encoding='utf-8') as f:
         info = json.load(f)
 
     dataset_info = info.get("dataset", {})
     processing_info = info.get("processing", {})
 
-    n_channels = dataset_info.get("channel_count", 32)  # 没有就用32
-    n_classes = len(dataset_info.get("category_list", [0, 1]))  # 没有就2分类
+    n_channels = dataset_info.get("channel_count", 32)
+    n_classes = len(dataset_info.get("category_list", [0, 1]))
 
     sr = processing_info.get("target_sampling_rate", 200)
     win = processing_info.get("window_sec", 1)
@@ -151,7 +150,6 @@ def train_dataset(dataset_name, model_type='SimpleMLP'):
     val_path = os.path.join(DATA_ROOT, dataset_name, 'val.h5')
     test_path = os.path.join(DATA_ROOT, dataset_name, 'test_x_only.h5')
 
-
     train_ds = TrainDataset(train_path)
     val_ds = TrainDataset(val_path)
     test_ds = TestDataset(test_path)
@@ -160,7 +158,7 @@ def train_dataset(dataset_name, model_type='SimpleMLP'):
     val_loader = DataLoader(val_ds, batch_size=BATCH_SIZE, shuffle=False)
     test_loader = DataLoader(test_ds, batch_size=1, shuffle=False)
 
-    # 根据选择初始化对应模型
+    # 模型初始化
     if model_type == 'SimpleLinear':
         model = SimpleLinear(n_classes).to(DEVICE)
     elif model_type == 'SimpleMLP':
@@ -173,16 +171,14 @@ def train_dataset(dataset_name, model_type='SimpleMLP'):
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=LR)
 
-    # 用来保存训练数据，方便后期画图
     train_losses = []
     val_losses = []
     val_acc_list = []
     best_acc = 0.0
     best_test_res = []
 
-    # 开始循环训练
+    # 训练循环
     for epoch in range(EPOCHS):
-        # 训练模式
         model.train()
         total_train_loss = 0.0
         train_total = 0
@@ -198,7 +194,7 @@ def train_dataset(dataset_name, model_type='SimpleMLP'):
         avg_train_loss = total_train_loss / train_total
         train_losses.append(avg_train_loss)
 
-        # 验证模式，关闭梯度
+        # 验证
         model.eval()
         total_val_loss = 0.0
         correct = 0
@@ -217,14 +213,15 @@ def train_dataset(dataset_name, model_type='SimpleMLP'):
         val_losses.append(avg_val_loss)
         val_acc_list.append(val_acc)
 
-        print(f"轮次{epoch+1} 训练损失:{avg_train_loss:.4f} 验证损失:{avg_val_loss:.4f} 准确率:{val_acc:.4f}")
+        print(f"轮次{epoch + 1} 训练损失:{avg_train_loss:.4f} 验证损失:{avg_val_loss:.4f} 准确率:{val_acc:.4f}")
 
-        # 保存最优模型对应的测试结果
+        # 保存最优结果
         if val_acc > best_acc:
             best_acc = val_acc
             temp_res = []
             for data in test_loader:
                 data = data.to(DEVICE)
+                # 修复笔误：arg → argmax
                 pred = torch.argmax(model(data), dim=1)
                 temp_res.append(int(pred.cpu().item()))
             best_test_res = temp_res
@@ -233,14 +230,10 @@ def train_dataset(dataset_name, model_type='SimpleMLP'):
     return best_acc, train_losses, val_losses, val_acc_list, best_test_res
 
 
-
-
-# ====================== 主函数 ======================
 # ====================== 主函数 ======================
 if __name__ == "__main__":
-    # 5个数据集列表
     datasets = ['BCIC2A', 'CHINESE', 'MDD', 'SEED', 'SLEEP']
-    model_type = 'SimpleMLP'  # 这里可以切换模型：SimpleLinear / SimpleMLP / EEGNet
+    model_type = 'EEGNet'  # 可切换：SimpleLinear / SimpleMLP / EEGNet
 
     print("批量的脚本启动")
 
@@ -254,11 +247,11 @@ if __name__ == "__main__":
             print(f"训练 {dataset} 时出错：{e}")
             all_results[dataset] = 0.0
 
-    # 打印所有结果汇总
-    print(f"\n{'='*60}")
+    # 结果汇总
+    print(f"\n{'=' * 60}")
     print(f"所有数据集训练结果汇总 (模型: {model_type})")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     for dataset, acc in all_results.items():
         print(f"{dataset}: 准确率 = {acc:.4f}")
 
-    print(f"\n所有结果已保存到 {RESULT_ROOT} 文件夹")
+    print(f"\n所有训练完成！")
