@@ -22,7 +22,7 @@ os.makedirs(RESULT_ROOT, exist_ok=True)
 
 
 
-class StrongEEGModel(nn.Module):
+class EEGModel(nn.Module):
 
     def __init__(self, num_classes):
         super().__init__()
