@@ -1,0 +1,57 @@
+[
+  {
+    "dataset": "MDD",
+    "channels": 20,
+    "time_points": 200,
+    "classes": 2,
+    "train_loss": 0.7447354396184286,
+    "val_loss": 1.076993715763092,
+    "best_val_acc": 0.775,
+    "test_size": 800,
+    "output_file": "C:\\Users\\17583\\Desktop\\机器学习\\course project\\submission\\MDD.txt"
+  },
+  {
+    "dataset": "SLEEP",
+    "channels": 6,
+    "time_points": 6000,
+    "classes": 5,
+    "train_loss": 1.9257505245884898,
+    "val_loss": 1.7199506962317772,
+    "best_val_acc": 0.20350334878928386,
+    "test_size": 1945,
+    "output_file": "C:\\Users\\17583\\Desktop\\机器学习\\course project\\submission\\SLEEP.txt"
+  },
+  {
+    "dataset": "SEED",
+    "channels": 62,
+    "time_points": 400,
+    "classes": 3,
+    "train_loss": 0.8732800282372368,
+    "val_loss": 2.3572225348154703,
+    "best_val_acc": 0.33555555555555555,
+    "test_size": 450,
+    "output_file": "C:\\Users\\17583\\Desktop\\机器学习\\course project\\submission\\SEED.txt"
+  },
+  {
+    "dataset": "CHINESE",
+    "channels": 22,
+    "time_points": 200,
+    "classes": 2,
+    "train_loss": 0.9667501831054688,
+    "val_loss": 3.125300118923187,
+    "best_val_acc": 0.5,
+    "test_size": 200,
+    "output_file": "C:\\Users\\17583\\Desktop\\机器学习\\course project\\submission\\CHINESE.txt"
+  },
+  {
+    "dataset": "BCIC2A",
+    "channels": 22,
+    "time_points": 800,
+    "classes": 4,
+    "train_loss": 1.3162791808446248,
+    "val_loss": 1.3392635292477078,
+    "best_val_acc": 0.4111111111111111,
+    "test_size": 360,
+    "output_file": "C:\\Users\\17583\\Desktop\\机器学习\\course project\\submission\\BCIC2A.txt"
+  }
+]
