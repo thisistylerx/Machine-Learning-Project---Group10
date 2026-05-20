@@ -74,7 +74,7 @@ def train_dataset(dataset_name):
     train_loader = DataLoader(train_ds, BATCH_SIZE, shuffle=True)
     val_loader = DataLoader(val_ds, BATCH_SIZE, shuffle=False)
 
-    model = StrongEEGModel(n_classes).to(DEVICE)
+    model = EEGModel(n_classes).to(DEVICE)
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=LR, weight_decay=1e-4)
     scheduler = CosineAnnealingLR(optimizer, T_max=EPOCHS)
