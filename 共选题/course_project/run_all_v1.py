@@ -20,7 +20,8 @@ DATA_ROOT = os.path.join(PROJECT_ROOT, 'data')
 RESULT_ROOT = os.path.join(PROJECT_ROOT, 'results_v1')
 os.makedirs(RESULT_ROOT, exist_ok=True)
 
-
+SUBMISSION_ROOT = os.path.join(PROJECT_ROOT, 'submission')
+os.makedirs(SUBMISSION_ROOT, exist_ok=True)
 
 class EEGModel(nn.Module):
 
@@ -125,12 +126,31 @@ def train_dataset(dataset_name):
         scheduler.step()
 
     print(f"最优准确率：{best_acc:.4f}")
+
+    test_loader = DataLoader(test_ds, batch_size=1, shuffle=False)
+    model.eval()
+    predictions = []
+    with torch.no_grad():
+        for data in test_loader:
+            data = data.to(DEVICE)
+            data = F.normalize(data, dim=2)
+            pred = model(data).argmax(1).item()
+            predictions.append(str(pred))
+
+    # 保存为txt文件
+    txt_path = os.path.join(SUBMISSION_ROOT, f"{dataset_name}.txt")
+    with open(txt_path, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(predictions))
+    print(f"提交文件已生成：{txt_path}")
+
+
+
     return best_acc
 
 
 # ====================== 主函数 ======================
 if __name__ == "__main__":
-    datasets = ['BCIC2A', 'CHINESE', 'MDD', 'SEED', 'SLEEP']
+    datasets = ['BCIC2A', 'CHINESE', 'MDD', 'SEED', 'SLEEP', 'BCI_Speech']
     all_results = {}
 
     print("批量训练启动")
