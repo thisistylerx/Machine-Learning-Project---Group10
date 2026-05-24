@@ -113,7 +113,7 @@ def train_dataset(dataset_name):
         acc = correct / total
         print(f"轮次{epoch + 1:02d} | 准确率:{acc:.4f}")
 
-        # 最优模型 + 早停
+        # 最优模型 + 早停1
         if acc > best_acc:
             best_acc = acc
             early_stop_counter = 0
