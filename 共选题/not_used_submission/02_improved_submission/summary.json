@@ -1,0 +1,72 @@
+[
+  {
+    "dataset": "MDD",
+    "channels": 20,
+    "time_points": 200,
+    "classes": 2,
+    "train_loss": 0.2608014235893885,
+    "val_loss": 0.5771449565887451,
+    "val_acc_last": 0.7734375,
+    "val_bal_acc_last": 0.7734375,
+    "best_score": 0.803125,
+    "best_metric": "bal_acc",
+    "test_size": 800,
+    "output_file": "C:\\Users\\17583\\Desktop\\机器学习\\course project\\submission_improved\\MDD.txt"
+  },
+  {
+    "dataset": "SLEEP",
+    "channels": 6,
+    "time_points": 6000,
+    "classes": 5,
+    "train_loss": 0.9476435553720489,
+    "val_loss": 2.08384601054027,
+    "val_acc_last": 0.2431736218444101,
+    "val_bal_acc_last": 0.2446311976058559,
+    "best_score": 0.2590939938644782,
+    "best_metric": "bal_acc",
+    "test_size": 1945,
+    "output_file": "C:\\Users\\17583\\Desktop\\机器学习\\course project\\submission_improved\\SLEEP.txt"
+  },
+  {
+    "dataset": "SEED",
+    "channels": 62,
+    "time_points": 400,
+    "classes": 3,
+    "train_loss": 0.34298546022839016,
+    "val_loss": 1.762271637386746,
+    "val_acc_last": 0.30444444444444446,
+    "val_bal_acc_last": 0.30444444444444446,
+    "best_score": 0.3333333333333333,
+    "best_metric": "bal_acc",
+    "test_size": 450,
+    "output_file": "C:\\Users\\17583\\Desktop\\机器学习\\course project\\submission_improved\\SEED.txt"
+  },
+  {
+    "dataset": "CHINESE",
+    "channels": 21,
+    "time_points": 200,
+    "classes": 2,
+    "train_loss": 0.6735039377212524,
+    "val_loss": 0.7597424149513244,
+    "val_acc_last": 0.5,
+    "val_bal_acc_last": 0.5,
+    "best_score": 0.515,
+    "best_metric": "bal_acc",
+    "test_size": 200,
+    "output_file": "C:\\Users\\17583\\Desktop\\机器学习\\course project\\submission_improved\\CHINESE.txt"
+  },
+  {
+    "dataset": "BCIC2A",
+    "channels": 22,
+    "time_points": 800,
+    "classes": 4,
+    "train_loss": 0.7333746857113308,
+    "val_loss": 1.7864071898990208,
+    "val_acc_last": 0.3138888888888889,
+    "val_bal_acc_last": 0.3138888888888889,
+    "best_score": 0.38611111111111107,
+    "best_metric": "bal_acc",
+    "test_size": 360,
+    "output_file": "C:\\Users\\17583\\Desktop\\机器学习\\course project\\submission_improved\\BCIC2A.txt"
+  }
+]
