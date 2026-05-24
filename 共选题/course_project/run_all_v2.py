@@ -171,7 +171,7 @@ def train_dataset(dataset_name):
     return best_acc
 
 
-#主函数
+#主函数1
 if __name__ == "__main__":
     datasets = ['BCIC2A', 'CHINESE', 'MDD', 'SEED', 'SLEEP', 'BCI_Speech']
     all_results = {}
