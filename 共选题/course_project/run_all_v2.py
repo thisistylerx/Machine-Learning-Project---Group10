@@ -20,7 +20,7 @@ DATA_ROOT = os.path.join(PROJECT_ROOT, 'data')
 RESULT_ROOT = os.path.join(PROJECT_ROOT, 'results_v2')
 os.makedirs(RESULT_ROOT, exist_ok=True)
 
-SUBMISSION_ROOT = os.path.join(PROJECT_ROOT, 'submission')
+SUBMISSION_ROOT = os.path.join(PROJECT_ROOT, 'txt')
 os.makedirs(SUBMISSION_ROOT, exist_ok=True)
 
 class PositionalEncoding(nn.Module):
