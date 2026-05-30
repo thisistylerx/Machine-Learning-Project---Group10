@@ -1,0 +1,35 @@
+{
+  "dataset": "ETIS",
+  "task": "Polyp Segmentation",
+  "paper_repo": "https://github.com/SLDGroup/EMCAD",
+  "baseline_repos": {
+    "Swin-Unet": "https://github.com/HuCaoFighting/Swin-Unet",
+    "U-Net": "https://github.com/milesial/Pytorch-UNet"
+  },
+  "emcad_scale": "PVT-EMCAD-B0",
+  "metrics": [
+    "Dice"
+  ],
+  "fixed_visual_sample": null,
+  "etis_paths": {
+    "root": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS",
+    "train_images": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\train\\images",
+    "train_masks": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\train\\masks",
+    "val_images": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\val\\images",
+    "val_masks": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\val\\masks",
+    "test_images": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\test\\images",
+    "test_masks": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\test\\masks",
+    "train_list": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\train_list_etis.txt",
+    "val_list": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\val_list_etis.txt",
+    "test_list": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\test_list_etis.txt"
+  },
+  "pvt_pretrained_path": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\pvt_pretrained_pth\\pvt_v2_b0.pth",
+  "train": {
+    "epochs": 60,
+    "batch_size": 8,
+    "image_size": 352,
+    "num_workers": 0,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.0001
+  }
+}
