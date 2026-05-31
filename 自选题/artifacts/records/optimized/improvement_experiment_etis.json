@@ -1,0 +1,32 @@
+{
+  "dataset": "ETIS",
+  "improvement_design": {
+    "baseline_source": "01_emcad_full_training.ipynb",
+    "baseline_summary": "EMCAD baseline uses a single 1x1 prediction head after decoder refinement.",
+    "improvement_change": "Replace the single prediction head with a learnable multi-branch fusion head.",
+    "expected_benefit": "Improve final decoder output aggregation without changing the whole backbone and decoder stack."
+  },
+  "best_val_dice": 0.8003,
+  "test_dice": 0.8473,
+  "checkpoint_path": "artifacts/checkpoints/emcad_improved_etis_best.pth",
+  "history_figure_path": "artifacts/figures/emcad_improved_history.png",
+  "visual_sample": "100.png",
+  "visual_path": "artifacts/figures/emcad_improved_visual_sample.png",
+  "comparison_summary": [
+    {
+      "variant": "EMCAD baseline",
+      "best_val_dice": 0.8128,
+      "test_dice": 0.8787,
+      "difference": "Reference baseline result",
+      "visual_path": "artifacts/figures/emcad_visual_sample.png"
+    },
+    {
+      "variant": "Improved learnable fusion head",
+      "best_val_dice": 0.8003,
+      "test_dice": 0.8473,
+      "difference": "Replace the single prediction head with a multi-branch learnable fusion head",
+      "visual_path": "artifacts/figures/emcad_improved_visual_sample.png"
+    }
+  ],
+  "notes": "The current lightweight improvement did not surpass the EMCAD baseline on ETIS."
+}

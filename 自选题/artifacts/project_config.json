@@ -10,20 +10,21 @@
   "metrics": [
     "Dice"
   ],
-  "fixed_visual_sample": null,
+  "fixed_visual_sample": "100.png",
   "etis_paths": {
-    "root": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS",
-    "train_images": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\train\\images",
-    "train_masks": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\train\\masks",
-    "val_images": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\val\\images",
-    "val_masks": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\val\\masks",
-    "test_images": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\test\\images",
-    "test_masks": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\test\\masks",
-    "train_list": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\train_list_etis.txt",
-    "val_list": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\val_list_etis.txt",
-    "test_list": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\ETIS\\test_list_etis.txt"
+    "root": "/content/drive/My Drive/自选题/data/ETIS",
+    "train_images": "/content/drive/My Drive/自选题/data/ETIS/train/images",
+    "train_masks": "/content/drive/My Drive/自选题/data/ETIS/train/masks",
+    "val_images": "/content/drive/My Drive/自选题/data/ETIS/val/images",
+    "val_masks": "/content/drive/My Drive/自选题/data/ETIS/val/masks",
+    "test_images": "/content/drive/My Drive/自选题/data/ETIS/test/images",
+    "test_masks": "/content/drive/My Drive/自选题/data/ETIS/test/masks",
+    "train_list": "/content/drive/My Drive/自选题/data/ETIS/train_list_etis.txt",
+    "val_list": "/content/drive/My Drive/自选题/data/ETIS/val_list_etis.txt",
+    "test_list": "/content/drive/My Drive/自选题/data/ETIS/test_list_etis.txt"
   },
-  "pvt_pretrained_path": "D:\\aaa_SUSTech\\Machine Learning\\Machine-Learning-Project---Group10\\自选题\\data\\pvt_pretrained_pth\\pvt_v2_b0.pth",
+  "pvt_pretrained_path": "/content/drive/My Drive/自选题/data/pvt_pretrained_pth/pvt_v2_b0.pth",
+  "swin_unet_pretrained_path": "/content/drive/My Drive/自选题/data/SwinUnet_pretrained_pth/swin_tiny_patch4_window7_224.pth",
   "train": {
     "epochs": 60,
     "batch_size": 8,

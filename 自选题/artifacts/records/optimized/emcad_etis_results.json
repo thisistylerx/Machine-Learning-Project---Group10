@@ -1,0 +1,11 @@
+{
+  "dataset": "ETIS",
+  "model": "PVT-EMCAD-B0",
+  "best_val_dice": 0.8128,
+  "test_dice": 0.8787,
+  "visual_sample": "100.png",
+  "checkpoint_path": "artifacts/checkpoints/emcad_b0_etis_best.pth",
+  "history_figure_path": "artifacts/figures/emcad_training_history.png",
+  "visual_path": "artifacts/figures/emcad_visual_sample.png",
+  "notes": "EMCAD baseline is the strongest model in the current ETIS experiment set."
+}

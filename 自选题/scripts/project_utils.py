@@ -11,6 +11,7 @@ ARTIFACTS = ROOT / "artifacts"
 DATA_ROOT = ROOT / "data"
 ETIS_ROOT = DATA_ROOT / "ETIS"
 PVT_PRETRAINED_ROOT = DATA_ROOT / "pvt_pretrained_pth"
+SWIN_UNET_PRETRAINED_ROOT = DATA_ROOT / "SwinUnet_pretrained_pth"
 SEED = 42
 
 
@@ -19,6 +20,7 @@ def ensure_project_dirs():
         DATA_ROOT,
         ETIS_ROOT,
         PVT_PRETRAINED_ROOT,
+        SWIN_UNET_PRETRAINED_ROOT,
         ARTIFACTS,
         ARTIFACTS / "checkpoints",
         ARTIFACTS / "figures",
@@ -74,6 +76,7 @@ def get_default_project_config():
             "test_list": str(ETIS_ROOT / "test_list_etis.txt"),
         },
         "pvt_pretrained_path": str(PVT_PRETRAINED_ROOT / "pvt_v2_b0.pth"),
+        "swin_unet_pretrained_path": str(SWIN_UNET_PRETRAINED_ROOT / "swin_tiny_patch4_window7_224.pth"),
         "train": {
             "epochs": 60,
             "batch_size": 8,
@@ -85,11 +88,28 @@ def get_default_project_config():
     }
 
 
+def _merge_with_defaults(default_value, current_value):
+    if isinstance(default_value, dict) and isinstance(current_value, dict):
+        merged = dict(default_value)
+        for key, value in current_value.items():
+            if key in merged:
+                merged[key] = _merge_with_defaults(merged[key], value)
+            else:
+                merged[key] = value
+        return merged
+    return current_value if current_value is not None else default_value
+
+
 def load_project_config(config_path=None):
     config_path = Path(config_path) if config_path is not None else ARTIFACTS / "project_config.json"
+    default_config = get_default_project_config()
     if config_path.exists():
-        return json.loads(config_path.read_text(encoding="utf-8"))
-    config = get_default_project_config()
+        loaded_config = json.loads(config_path.read_text(encoding="utf-8"))
+        merged_config = _merge_with_defaults(default_config, loaded_config)
+        if merged_config != loaded_config:
+            save_json(merged_config, config_path)
+        return merged_config
+    config = default_config
     save_json(config, config_path)
     return config
 
@@ -108,6 +128,7 @@ def print_env_summary(torch_module=None):
         "data_root": str(DATA_ROOT),
         "etis_root": str(ETIS_ROOT),
         "pvt_pretrained_root": str(PVT_PRETRAINED_ROOT),
+        "swin_unet_pretrained_root": str(SWIN_UNET_PRETRAINED_ROOT),
         "torch_installed": torch_module is not None,
         "cuda_available": bool(torch_module and torch_module.cuda.is_available()),
     }

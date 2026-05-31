@@ -1,0 +1,350 @@
+{
+  "dataset": "ETIS",
+  "device": "cpu",
+  "visual_sample": "165.png",
+  "selected_visual_sample": "165.png",
+  "selected_sample_dice": {
+    "U-Net": 0.8549,
+    "Swin-Unet": 0.9131,
+    "EMCAD": 0.9255
+  },
+  "three_model_comparison_figure_path": "/content/drive/My Drive/自选题/artifacts/figures/baseline_three_model_comparison.png",
+  "rows": [
+    {
+      "model": "U-Net",
+      "best_val_dice": 0.7236,
+      "val_summary": {
+        "loss": 0.7662,
+        "dice": 0.7236
+      },
+      "test_summary": {
+        "loss": 0.7686,
+        "dice": 0.6569
+      },
+      "val_rows": [
+        {
+          "name": "12.png",
+          "dice": 0.8313
+        },
+        {
+          "name": "195.png",
+          "dice": 0.6243
+        },
+        {
+          "name": "66.png",
+          "dice": 0.7151
+        }
+      ],
+      "test_rows": [
+        {
+          "name": "100.png",
+          "dice": 0.9062
+        },
+        {
+          "name": "113.png",
+          "dice": 0.9809
+        },
+        {
+          "name": "117.png",
+          "dice": 0.9797
+        },
+        {
+          "name": "11.png",
+          "dice": 0.8105
+        },
+        {
+          "name": "123.png",
+          "dice": 0.7961
+        },
+        {
+          "name": "143.png",
+          "dice": 0.9446
+        },
+        {
+          "name": "147.png",
+          "dice": 0.5713
+        },
+        {
+          "name": "14.png",
+          "dice": 0.0999
+        },
+        {
+          "name": "153.png",
+          "dice": 0.8896
+        },
+        {
+          "name": "165.png",
+          "dice": 0.8549
+        },
+        {
+          "name": "169.png",
+          "dice": 0.0
+        },
+        {
+          "name": "178.png",
+          "dice": 0.6994
+        },
+        {
+          "name": "28.png",
+          "dice": 0.0
+        },
+        {
+          "name": "43.png",
+          "dice": 0.8308
+        },
+        {
+          "name": "53.png",
+          "dice": 0.5001
+        },
+        {
+          "name": "63.png",
+          "dice": 0.2273
+        },
+        {
+          "name": "64.png",
+          "dice": 0.3995
+        },
+        {
+          "name": "76.png",
+          "dice": 0.8713
+        },
+        {
+          "name": "82.png",
+          "dice": 0.9403
+        },
+        {
+          "name": "87.png",
+          "dice": 0.8363
+        }
+      ],
+      "history_figure_path": "/content/drive/My Drive/自选题/artifacts/figures/u_net_history.png",
+      "visual_path": "/content/drive/My Drive/自选题/artifacts/figures/u_net_visual_sample.png",
+      "checkpoint_path": "/content/drive/My Drive/自选题/artifacts/checkpoints/u_net_etis_best.pth"
+    },
+    {
+      "model": "Swin-Unet",
+      "best_val_dice": 0.8574,
+      "val_summary": {
+        "loss": 0.1925,
+        "dice": 0.8574
+      },
+      "test_summary": {
+        "loss": 0.2441,
+        "dice": 0.8377
+      },
+      "val_rows": [
+        {
+          "name": "12.png",
+          "dice": 0.8151
+        },
+        {
+          "name": "195.png",
+          "dice": 0.8415
+        },
+        {
+          "name": "66.png",
+          "dice": 0.9157
+        }
+      ],
+      "test_rows": [
+        {
+          "name": "100.png",
+          "dice": 0.9044
+        },
+        {
+          "name": "113.png",
+          "dice": 0.9804
+        },
+        {
+          "name": "117.png",
+          "dice": 0.9804
+        },
+        {
+          "name": "11.png",
+          "dice": 0.8088
+        },
+        {
+          "name": "123.png",
+          "dice": 0.877
+        },
+        {
+          "name": "143.png",
+          "dice": 0.9234
+        },
+        {
+          "name": "147.png",
+          "dice": 0.9266
+        },
+        {
+          "name": "14.png",
+          "dice": 0.7418
+        },
+        {
+          "name": "153.png",
+          "dice": 0.6621
+        },
+        {
+          "name": "165.png",
+          "dice": 0.9131
+        },
+        {
+          "name": "169.png",
+          "dice": 0.619
+        },
+        {
+          "name": "178.png",
+          "dice": 0.7583
+        },
+        {
+          "name": "28.png",
+          "dice": 0.8036
+        },
+        {
+          "name": "43.png",
+          "dice": 0.8314
+        },
+        {
+          "name": "53.png",
+          "dice": 0.5381
+        },
+        {
+          "name": "63.png",
+          "dice": 0.9103
+        },
+        {
+          "name": "64.png",
+          "dice": 0.9688
+        },
+        {
+          "name": "76.png",
+          "dice": 0.8533
+        },
+        {
+          "name": "82.png",
+          "dice": 0.9603
+        },
+        {
+          "name": "87.png",
+          "dice": 0.7938
+        }
+      ],
+      "history_figure_path": "/content/drive/My Drive/自选题/artifacts/figures/swin_unet_history.png",
+      "visual_path": "/content/drive/My Drive/自选题/artifacts/figures/swin_unet_visual_sample.png",
+      "checkpoint_path": "/content/drive/My Drive/自选题/artifacts/checkpoints/swin_unet_etis_best.pth",
+      "pretrained_summary": {
+        "restored_from_checkpoint": true
+      }
+    },
+    {
+      "model": "EMCAD",
+      "best_val_dice": 0.8128,
+      "val_summary": {
+        "loss": 0.8054,
+        "dice": 0.8128
+      },
+      "test_summary": {
+        "loss": 0.6782,
+        "dice": 0.8787
+      },
+      "val_rows": [
+        {
+          "name": "12.png",
+          "dice": 0.8097
+        },
+        {
+          "name": "195.png",
+          "dice": 0.7598
+        },
+        {
+          "name": "66.png",
+          "dice": 0.8689
+        }
+      ],
+      "test_rows": [
+        {
+          "name": "100.png",
+          "dice": 0.9456
+        },
+        {
+          "name": "113.png",
+          "dice": 0.9822
+        },
+        {
+          "name": "117.png",
+          "dice": 0.9835
+        },
+        {
+          "name": "11.png",
+          "dice": 0.7798
+        },
+        {
+          "name": "123.png",
+          "dice": 0.8243
+        },
+        {
+          "name": "143.png",
+          "dice": 0.9383
+        },
+        {
+          "name": "147.png",
+          "dice": 0.8784
+        },
+        {
+          "name": "14.png",
+          "dice": 0.9091
+        },
+        {
+          "name": "153.png",
+          "dice": 0.9302
+        },
+        {
+          "name": "165.png",
+          "dice": 0.9255
+        },
+        {
+          "name": "169.png",
+          "dice": 0.8565
+        },
+        {
+          "name": "178.png",
+          "dice": 0.6552
+        },
+        {
+          "name": "28.png",
+          "dice": 0.877
+        },
+        {
+          "name": "43.png",
+          "dice": 0.8553
+        },
+        {
+          "name": "53.png",
+          "dice": 0.7013
+        },
+        {
+          "name": "63.png",
+          "dice": 0.8289
+        },
+        {
+          "name": "64.png",
+          "dice": 0.9695
+        },
+        {
+          "name": "76.png",
+          "dice": 0.8438
+        },
+        {
+          "name": "82.png",
+          "dice": 0.9611
+        },
+        {
+          "name": "87.png",
+          "dice": 0.9282
+        }
+      ],
+      "history_figure_path": "/content/drive/My Drive/自选题/artifacts/figures/emcad_training_history.png",
+      "visual_path": "/content/drive/My Drive/自选题/artifacts/figures/emcad_visual_sample.png",
+      "checkpoint_path": "/content/drive/My Drive/自选题/artifacts/checkpoints/emcad_b0_etis_best.pth"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "env_summary": {
+    "python": "3.12.13",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.35",
+    "root": "/content/drive/My Drive/自选题",
+    "data_root": "/content/drive/My Drive/自选题/data",
+    "etis_root": "/content/drive/My Drive/自选题/data/ETIS",
+    "pvt_pretrained_root": "/content/drive/My Drive/自选题/data/pvt_pretrained_pth",
+    "swin_unet_pretrained_root": "/content/drive/My Drive/自选题/data/SwinUnet_pretrained_pth",
+    "torch_installed": true,
+    "cuda_available": true
+  },
+  "dataset": "ETIS",
+  "split_summaries": {
+    "train": {
+      "split": "train",
+      "image_count": 156,
+      "mask_count": 156,
+      "list_count": 156,
+      "image_mask_match": true,
+      "list_match_images": false,
+      "preview": [
+        "1.png",
+        "10.png",
+        "101.png",
+        "102.png",
+        "103.png",
+        "104.png",
+        "105.png",
+        "106.png"
+      ]
+    },
+    "val": {
+      "split": "val",
+      "image_count": 20,
+      "mask_count": 20,
+      "list_count": 20,
+      "image_mask_match": true,
+      "list_match_images": false,
+      "preview": [
+        "12.png",
+        "137.png",
+        "146.png",
+        "163.png",
+        "173.png",
+        "179.png",
+        "185.png",
+        "193.png"
+      ]
+    },
+    "test": {
+      "split": "test",
+      "image_count": 20,
+      "mask_count": 20,
+      "list_count": 20,
+      "image_mask_match": true,
+      "list_match_images": false,
+      "preview": [
+        "100.png",
+        "11.png",
+        "113.png",
+        "117.png",
+        "123.png",
+        "14.png",
+        "143.png",
+        "147.png"
+      ]
+    }
+  },
+  "fixed_visual_sample": "100.png",
+  "pretrained_path": "/content/drive/My Drive/自选题/data/pvt_pretrained_pth/pvt_v2_b0.pth"
+}

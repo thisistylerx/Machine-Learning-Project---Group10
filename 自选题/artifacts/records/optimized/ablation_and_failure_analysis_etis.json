@@ -1,0 +1,48 @@
+{
+  "dataset": "ETIS",
+  "ablation_design": {
+    "baseline_source": "01_emcad_full_training.ipynb",
+    "baseline_summary": "EMCAD baseline uses MSCAM with kernel sizes (1, 3, 5).",
+    "ablation_change": "Replace multi-scale MSCAM kernels with a single scale kernel set (3,).",
+    "analysis_goal": "Measure how much explicit multi-scale decoding contributes on the ETIS split."
+  },
+  "best_val_dice": 0.8055,
+  "test_dice": 0.8382,
+  "checkpoint_path": "artifacts/checkpoints/emcad_ablation_etis_best.pth",
+  "history_figure_path": "artifacts/figures/emcad_ablation_history.png",
+  "visual_sample": "100.png",
+  "visual_path": "artifacts/figures/emcad_ablation_visual_sample.png",
+  "comparison_summary": [
+    {
+      "variant": "EMCAD baseline",
+      "best_val_dice": 0.8128,
+      "test_dice": 0.8787,
+      "difference": "Reference from 01 with MSCAM kernels (1, 3, 5)",
+      "visual_path": "artifacts/figures/emcad_visual_sample.png"
+    },
+    {
+      "variant": "Single-scale MSCAM ablation",
+      "best_val_dice": 0.8055,
+      "test_dice": 0.8382,
+      "difference": "MSCAM kernels changed to (3,)",
+      "visual_path": "artifacts/figures/emcad_ablation_visual_sample.png"
+    }
+  ],
+  "failure_analysis_summary": {
+    "visual_sample": "100.png",
+    "baseline_visual_path": "artifacts/figures/emcad_visual_sample.png",
+    "ablation_visual_path": "artifacts/figures/emcad_ablation_visual_sample.png",
+    "failure_modes": [
+      {
+        "name": "small polyp under-segmentation",
+        "hypothesis": "single-scale decoding weakens multi-scale context aggregation",
+        "evidence_placeholder": "attach per-sample Dice and qualitative figures here"
+      },
+      {
+        "name": "boundary leakage",
+        "hypothesis": "reduced receptive field hurts ambiguous polyp boundaries",
+        "evidence_placeholder": "attach boundary comparison figures here"
+      }
+    ]
+  }
+}

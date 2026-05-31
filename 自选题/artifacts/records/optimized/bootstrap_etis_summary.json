@@ -1,0 +1,37 @@
+{
+  "dataset": "ETIS",
+  "split_counts": {
+    "train": {
+      "image_count": 156,
+      "mask_count": 156,
+      "list_count": 156
+    },
+    "val": {
+      "image_count": 20,
+      "mask_count": 20,
+      "list_count": 20
+    },
+    "test": {
+      "image_count": 20,
+      "mask_count": 20,
+      "list_count": 20
+    }
+  },
+  "fixed_visual_sample": "100.png",
+  "pretrained_paths": {
+    "pvt": "data/pvt_pretrained_pth/pvt_v2_b0.pth",
+    "swin_unet": "data/SwinUnet_pretrained_pth/swin_tiny_patch4_window7_224.pth"
+  },
+  "env_summary": {
+    "python": "3.12.13",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.35",
+    "root": "/content/drive/My Drive/自选题",
+    "data_root": "/content/drive/My Drive/自选题/data",
+    "etis_root": "/content/drive/My Drive/自选题/data/ETIS",
+    "pvt_pretrained_root": "/content/drive/My Drive/自选题/data/pvt_pretrained_pth",
+    "swin_unet_pretrained_root": "/content/drive/My Drive/自选题/data/SwinUnet_pretrained_pth",
+    "torch_installed": true,
+    "cuda_available": true
+  },
+  "notes": "Bootstrap summary after successful ETIS dataset check and configuration initialization."
+}

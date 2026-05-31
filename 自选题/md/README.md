@@ -1,85 +1,110 @@
 # EMCAD ETIS 医学图像分割课程项目
 
-本项目围绕 **EMCAD: Efficient Multi-scale Convolutional Attention Decoding for Medical Image Segmentation** 展开，当前聚焦 **ETIS polyp segmentation** 任务，目标是完成课程要求的完整闭环：
+本项目围绕 **EMCAD: Efficient Multi-scale Convolutional Attention Decoding for Medical Image Segmentation** 展开，当前聚焦 **ETIS polyp segmentation** 任务。当前版本已经完成课程项目要求的主要闭环：
 
-- 复现 EMCAD 主模型并尽量贴近官方 polyp 任务实现
-- 使用 `U-Net` 和 `Swin-Unet` 做规范对照
-- 完成 1 组 EMCAD 消融
-- 完成失败分析
-- 提出 1 个轻量结构改进并进行对比验证
+- EMCAD baseline 复现
+- U-Net 与 Swin-Unet 对照实验
+- 1 组 EMCAD 消融实验
+- 1 组轻量改进实验
+- 失败分析入口与对比图整理
 
-本项目保留当前简化目录结构，但实现逻辑遵循最初 `PLAN.md` 的目标：  
-**模型、训练、评估、对比分析都写在对应 notebook 内，而不是藏在共享脚本里。**
+当前五本 notebook 均已成功运行，并已生成对应的 checkpoint、图像和 JSON 记录文件。
 
 ## 目录结构
 
 ```text
 .
-├─ 00_project_bootstrap_etis.ipynb
-├─ 01_emcad_full_training.ipynb
-├─ 02_baseline_comparison.ipynb
-├─ 03_ablation_and_failure_analysis.ipynb
-├─ 04_improvement_experiment.ipynb
-├─ artifacts/
-│  ├─ checkpoints/
-│  ├─ figures/
-│  └─ records/
-├─ data/
-│  ├─ ETIS/
-│  │  ├─ train/
-│  │  ├─ val/
-│  │  ├─ test/
-│  │  ├─ train_list_etis.txt
-│  │  ├─ val_list_etis.txt
-│  │  └─ test_list_etis.txt
-│  └─ pvt_pretrained_pth/
-│     └─ pvt_v2_b0.pth
-├─ md/
-│  ├─ README.md
-│  ├─ PROJECT_STATUS.md
-│  └─ EXPERIMENT_SUMMARY.md
-└─ scripts/
-   ├─ generate_notebooks.py
-   └─ project_utils.py
+├── 00_project_bootstrap_etis.ipynb
+├── 01_emcad_full_training.ipynb
+├── 02_baseline_comparison.ipynb
+├── 03_ablation_and_failure_analysis.ipynb
+├── 04_improvement_experiment.ipynb
+├── artifacts/
+│   ├── checkpoints/
+│   ├── figures/
+│   └── records/
+├── data/
+│   ├── ETIS/
+│   │   ├── train/
+│   │   ├── val/
+│   │   ├── test/
+│   │   ├── train_list_etis.txt
+│   │   ├── val_list_etis.txt
+│   │   └── test_list_etis.txt
+│   ├── pvt_pretrained_pth/
+│   │   └── pvt_v2_b0.pth
+│   └── SwinUnet_pretrained_pth/
+│       └── swin_tiny_patch4_window7_224.pth
+├── md/
+│   ├── README.md
+│   ├── PROJECT_STATUS.md
+│   └── EXPERIMENT_SUMMARY.md
+└── scripts/
+    ├── generate_notebooks.py
+    └── project_utils.py
 ```
 
 ## Notebook 职责
 
 ### `00_project_bootstrap_etis.ipynb`
 
-- 环境检查
-- 真实 ETIS 数据目录检查
-- `train / val / test = 156 / 20 / 20` 统计确认
-- 固定可视化测试样本
-- 项目配置初始化
+- 检查 ETIS 数据目录与列表文件
+- 确认 `train / val / test = 156 / 20 / 20`
+- 固定 bootstrap 阶段的数据检查样本
+- 初始化统一配置与输出目录
+
+当前 `00` 中固定的数据检查样本为 `100.png`。
 
 ### `01_emcad_full_training.ipynb`
 
 - EMCAD baseline 的唯一完整定义来源
-- 完整 ETIS 数据流
+- 完整 ETIS 数据流程
 - 完整 EMCAD B0 结构
 - 加载 `data/pvt_pretrained_pth/pvt_v2_b0.pth`
-- 完整训练、验证、测试、记录与可视化接口
+- 完整训练、验证、测试、记录与可视化
+
+当前 EMCAD baseline 结果：
+
+- `best_val_dice = 0.8128`
+- `test_dice = 0.8787`
 
 ### `02_baseline_comparison.ipynb`
 
 - 完整 U-Net 实现
 - 完整 Swin-Unet 实现
-- 与 EMCAD baseline 的统一口径比较
-- 对同一测试样本导出 U-Net、Swin-Unet、EMCAD 的分割图
+- 读取 EMCAD baseline 结果做统一口径比较
+- 加载官方 `Swin-T` 预训练权重
+- 自动筛选满足三模型对比条件的统一测试样本
+- 导出单模型图和三模型合并对比图
+
+当前 `02` 中自动筛中的统一对比样本为 `165.png`，对应 Dice 为：
+
+- U-Net `0.8549`
+- Swin-Unet `0.9131`
+- EMCAD `0.9255`
+
+三模型整体 test Dice 为：
+
+- U-Net `0.6569`
+- Swin-Unet `0.8377`
+- EMCAD `0.8787`
 
 ### `03_ablation_and_failure_analysis.ipynb`
 
 - 以 `01` 的 EMCAD baseline 为参考来源
 - 只定义消融后的结构差异
 - 生成 baseline 与 ablation 的对比分析
-- 组织失败分析入口
+- 整理失败分析入口
+
+当前消融版本 test Dice 为 `0.8382`。
 
 ### `04_improvement_experiment.ipynb`
 
 - 以 `01` 的 EMCAD baseline 为参考来源
 - 只定义改进后的结构差异
 - 生成 baseline 与 improvement 的对比分析
+
+当前改进版本 test Dice 为 `0.8473`。
 
 ## 共享脚本职责
 
@@ -92,18 +117,24 @@
 - JSON 保存
 - 环境摘要打印
 
-它**不包含**：
+其中不包含：
 
 - 模型结构
 - 数据集类
 - dataloader helper
 - 训练 step
 - 指标函数
-- 消融/改进实验逻辑
+- 消融或改进实验逻辑
 
 ## 数据说明
 
-本项目当前唯一数据集为 **ETIS**，并已经按现成划分放在：
+当前唯一数据集为 **ETIS**，并使用现成划分：
+
+- 训练集：156
+- 验证集：20
+- 测试集：20
+
+统一数据目录：
 
 - `data/ETIS/train/images`
 - `data/ETIS/train/masks`
@@ -111,29 +142,31 @@
 - `data/ETIS/val/masks`
 - `data/ETIS/test/images`
 - `data/ETIS/test/masks`
-- `data/ETIS/train_list_etis.txt`
-- `data/ETIS/val_list_etis.txt`
-- `data/ETIS/test_list_etis.txt`
 
-当前统一使用：
+预训练权重：
 
-- 训练集：156 张
-- 验证集：20 张
-- 测试集：20 张
-- 固定可视化对象：`test_list_etis.txt` 中的第一个样本
-
-EMCAD backbone 预训练权重固定使用：
-
-- `data/pvt_pretrained_pth/pvt_v2_b0.pth`
+- EMCAD backbone：`data/pvt_pretrained_pth/pvt_v2_b0.pth`
+- Swin-Unet：`data/SwinUnet_pretrained_pth/swin_tiny_patch4_window7_224.pth`
 
 ## 指标与输出
 
 - 统一评估指标：`Dice`
-- 统一图像输出目录：`artifacts/figures`
-- 统一结果记录目录：`artifacts/records`
-- 统一权重输出目录：`artifacts/checkpoints`
+- 图像输出目录：`artifacts/figures`
+- 权重输出目录：`artifacts/checkpoints`
+- 原始结果记录目录：`artifacts/records`
+- 优化版结果记录目录：`artifacts/records/optimized`
 
-## 运行顺序
+当前关键图像包括：
+
+- EMCAD 训练曲线：`artifacts/figures/emcad_training_history.png`
+- EMCAD 样本图：`artifacts/figures/emcad_visual_sample.png`
+- U-Net 样本图：`artifacts/figures/u_net_visual_sample.png`
+- Swin-Unet 样本图：`artifacts/figures/swin_unet_visual_sample.png`
+- 三模型合图：`artifacts/figures/baseline_three_model_comparison.png`
+- 消融样本图：`artifacts/figures/emcad_ablation_visual_sample.png`
+- 改进样本图：`artifacts/figures/emcad_improved_visual_sample.png`
+
+## 复现时建议运行顺序
 
 1. `00_project_bootstrap_etis.ipynb`
 2. `01_emcad_full_training.ipynb`
@@ -143,11 +176,14 @@ EMCAD backbone 预训练权重固定使用：
 
 ## 官方参考
 
-- EMCAD：<https://github.com/SLDGroup/EMCAD>
-- Swin-Unet：<https://github.com/HuCaoFighting/Swin-Unet>
-- U-Net：<https://github.com/milesial/Pytorch-UNet>
+- [EMCAD](https://github.com/SLDGroup/EMCAD)
+- [Swin-Unet](https://github.com/HuCaoFighting/Swin-Unet)
+- [Pytorch-UNet](https://github.com/milesial/Pytorch-UNet)
 
 ## 当前状态
 
-当前阶段重点是把 notebook 重写成真正面向 ETIS 的课程项目实验载体，并统一到 Dice-only、B0 预训练权重、单一正式流程版本。  
-后续等正式训练结果出来后，再基于已有文字、表格和图像制作 poster。
+当前实验闭环已经完成，结果、图像和 checkpoint 均已产出。后续工作重点不再是补跑实验，而是：
+
+- 整理实验结论
+- 补足失败分析文字证据
+- 从现有图表与结果中筛选 poster 素材

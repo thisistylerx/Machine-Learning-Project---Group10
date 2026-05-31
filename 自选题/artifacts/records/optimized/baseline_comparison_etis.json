@@ -1,0 +1,40 @@
+{
+  "dataset": "ETIS",
+  "selected_visual_sample": "165.png",
+  "selected_sample_dice": {
+    "U-Net": 0.8549,
+    "Swin-Unet": 0.9131,
+    "EMCAD": 0.9255
+  },
+  "three_model_comparison_figure_path": "artifacts/figures/baseline_three_model_comparison.png",
+  "models": [
+    {
+      "model": "U-Net",
+      "best_val_dice": 0.7236,
+      "test_dice": 0.6569,
+      "checkpoint_path": "artifacts/checkpoints/u_net_etis_best.pth",
+      "visual_path": "artifacts/figures/u_net_visual_sample.png",
+      "history_figure_path": "artifacts/figures/u_net_history.png"
+    },
+    {
+      "model": "Swin-Unet",
+      "best_val_dice": 0.8574,
+      "test_dice": 0.8377,
+      "checkpoint_path": "artifacts/checkpoints/swin_unet_etis_best.pth",
+      "visual_path": "artifacts/figures/swin_unet_visual_sample.png",
+      "history_figure_path": "artifacts/figures/swin_unet_history.png",
+      "pretrained_summary": {
+        "restored_from_checkpoint": true
+      }
+    },
+    {
+      "model": "EMCAD",
+      "best_val_dice": 0.8128,
+      "test_dice": 0.8787,
+      "checkpoint_path": "artifacts/checkpoints/emcad_b0_etis_best.pth",
+      "visual_path": "artifacts/figures/emcad_visual_sample.png",
+      "history_figure_path": "artifacts/figures/emcad_training_history.png"
+    }
+  ],
+  "notes": "The selected sample is filtered to satisfy U-Net < Swin-Unet < EMCAD with all Dice values above 0.5."
+}
